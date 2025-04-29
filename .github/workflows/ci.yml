@@ -68,7 +68,7 @@ jobs:
           EOF
 
       - name: Run migration/seeding if needed
-        run: npm run migrate:test
+        run: npm run migrate:test up
 
       - name: Run unit & integration tests
         run: npm test
