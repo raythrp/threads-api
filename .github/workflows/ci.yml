@@ -31,6 +31,9 @@ jobs:
       PGPASSWORD: testpass
       PGDATABASE: testdb
       NODE_ENV: test
+      ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
+      REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
+      ACCESS_TOKEN_AGE: ${{ secrets.ACCESS_TOKEN_AGE }}
 
     steps:
       - name: Checkout code
