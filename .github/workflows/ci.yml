@@ -31,6 +31,9 @@ jobs:
       PGPASSWORD: testpass
       PGDATABASE: testdb
       NODE_ENV: test
+      ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
+      REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
+      ACCESS_TOKEN_AGE: ${{ secrets.ACCESS_TOKEN_AGE }}
 
     steps:
       - name: Checkout code
@@ -50,13 +53,25 @@ jobs:
             echo "Waiting for postgres..."
             sleep 1
           done
+        
+      - name: Create test.json config
+        run: |
+          mkdir -p config/database
+          cat <<EOF > config/database/test.json
+          {
+            "dev": {
+              "driver": "pg",
+              "user": "testuser",
+              "password": "testpass",
+              "host": "localhost",
+              "port": 5432,
+              "database": "testdb"
+            }
+          }
+          EOF
 
       - name: Run migration/seeding if needed
-        run: |
-          # Replace with your actual command
-          # Example: npm run migrate
-          echo "Run your DB migrations here"
-          npm run migrate:test
+        run: npm run migrate:test up
 
       - name: Run unit & integration tests
         run: npm test
