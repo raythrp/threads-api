@@ -24,7 +24,7 @@ jobs:
             cd /home/ubuntu/threads-api &&
             git checkout master &&
             git fetch --all &&
-            git reset --hard origin/main &&
+            git reset --hard origin/master &&
             git pull origin master &&
             npm i &&
             pm2 restart threads-api
