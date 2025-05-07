@@ -19,13 +19,13 @@ jobs:
 
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyhecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
 
             cd /home/ubuntu/threads-api &&
-            git checkout dev &&
+            git checkout master &&
             git fetch --all &&
             git reset --hard origin/main &&
-            git pull origin dev &&
+            git pull origin master &&
             npm i &&
             pm2 restart threads-api
             '
