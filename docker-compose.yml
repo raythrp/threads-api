@@ -1,0 +1,11 @@
+services:
+  api:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      PGHOST: host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
