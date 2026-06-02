@@ -12,10 +12,6 @@ class GetThreadUseCase {
         this._validatePayload({ id: id })
         const thread = await this._threadRepository.getThreadById(id)
         const comments = await this._commentRepository.getCommentsByThreadId(id)
-        const formattedComments = comments.map(comment => {
-            const content = comment.is_deleted ? '**komentar telah dihapus**' : comment.content
-            return new ExistingComment({ ...comment, content})
-        })
         const formattedThread = new ExistingThread({
             id: thread.id,
             title: thread.title,
@@ -23,7 +19,7 @@ class GetThreadUseCase {
             date: thread.date,
             username: thread.username,
             is_deleted: thread.is_deleted,
-            comments: formattedComments
+            comments: comments
           });
 
         return formattedThread

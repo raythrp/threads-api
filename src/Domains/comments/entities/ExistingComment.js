@@ -5,7 +5,7 @@ class ExistingComment {
         const { id, content, username, date, thread_id, is_deleted } = payload
 
         this.id = id
-        this.content = content
+        this.content = is_deleted ? '**komentar telah dihapus**' : content
         this.username = username
         this.date = date
         this.thread_id = thread_id

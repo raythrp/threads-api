@@ -2,6 +2,7 @@ const NewComment = require('../../../Domains/comments/entities/NewComment')
 const CommentRepository = require('../../../Domains/comments/CommentRepository')
 const AddCommentUseCase = require('../AddCommentUseCase')
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository')
+const ExistingComment = require('../../../Domains/comments/entities/ExistingComment')
 
 describe('AddCommentUseCase', () => {
     it('should throw error if thread not found', async () => {
@@ -55,20 +56,23 @@ describe('AddCommentUseCase', () => {
 
     it('should orchestrate the adding comment action correctly', async () => {
         const useCasePayload = {
-            content: 'Comment tesing',
+            content: 'Comment testing',
             thread_id: 'thread-123',
             username: 'dicoding'
         }
 
         // Mocking Mechanism
-        const mockAddedComment = {
+        const mockAddedComment = new ExistingComment({
             id: 'comment-123',
-            content: useCasePayload.content,
-            thread_id: useCasePayload.thread_id,
-            username: useCasePayload.username,
-        }
+            content: 'Comment testing',
+            thread_id: 'thread-123',
+            username: 'dicoding',
+            is_deleted: false,
+            date: '2025-04-18 17:19:07.131+07'
+        })
+
         const mockCommentRepository = new CommentRepository()   
-        const mockThreadRepository = new ThreadRepository
+        const mockThreadRepository = new ThreadRepository()
 
         mockCommentRepository.addComment = jest.fn()
             .mockImplementation(() => Promise.resolve(mockAddedComment))
@@ -84,7 +88,15 @@ describe('AddCommentUseCase', () => {
         const addedComment = await addCommentUseCase.execute(useCasePayload)
 
         // Assert
-        expect(addedComment).toStrictEqual(mockAddedComment)
+        expect(addedComment).toStrictEqual(new ExistingComment({
+          id: 'comment-123',
+          content: useCasePayload.content,
+          thread_id: useCasePayload.thread_id,
+          username: 'dicoding',
+          is_deleted: false,
+          date: '2025-04-18 17:19:07.131+07'
+        }))
         expect(mockCommentRepository.addComment).toBeCalledWith(new NewComment(useCasePayload))
+        expect(mockThreadRepository.getThreadById).toBeCalledWith(useCasePayload.thread_id)
     })
 })
