@@ -5,8 +5,6 @@ const ExistingComment = require('../../../Domains/comments/entities/ExistingComm
 const GetThreadUseCase = require('../GetThreadUseCase')
 
 describe('GetThreadUseCase', () => {
-    
-
     it('should throw error if payload data type is wrong', async () => {
         // Arrange
         const useCasePayload = {
@@ -58,15 +56,6 @@ describe('GetThreadUseCase', () => {
         }
 
         // Mocking mechanism
-        const mockAddedThread = {
-            id: useCasePayload.id,
-            title: 'Comment testing',
-            body: 'Halo',
-            username: 'dicoding',
-            is_deleted: false,
-            date: '2025-04-11 15:43:23.47+07',
-        }
-
         const mockAddedComment1 = new ExistingComment({
             id: 'comment-123',
             username: 'dicoding',
@@ -94,6 +83,20 @@ describe('GetThreadUseCase', () => {
             is_deleted: true
         })
 
+        const mockAddedThread = new ExistingThread({
+          id: useCasePayload.id,
+          title: 'Comment testing',
+          body: 'Halo',
+          username: 'dicoding',
+          is_deleted: false,
+          date: '2025-04-11 15:43:23.47+07',
+          comments: [
+            mockAddedComment1,
+            mockAddedComment2,
+            mockDeletedComment
+          ]
+      })
+
         const mockThreadRepository = new ThreadRepository()
         const mockCommentRepository = new CommentRepository()
 
@@ -101,10 +104,10 @@ describe('GetThreadUseCase', () => {
             .mockImplementation(() => Promise.resolve(mockAddedThread))
         mockCommentRepository.getCommentsByThreadId = jest.fn()
             .mockImplementation(() => Promise.resolve([
-                mockAddedComment1,
-                mockAddedComment2,
-                mockDeletedComment
-        ]))
+              mockAddedComment1,
+              mockAddedComment2,
+              mockDeletedComment
+            ]))
         mockAddedThread.comments = [mockAddedComment1, mockAddedComment2]
 
         const getThreadUseCase = new GetThreadUseCase({
@@ -119,6 +122,7 @@ describe('GetThreadUseCase', () => {
         expect(retrievedThread).toStrictEqual(
             new ExistingThread({
                 ...mockAddedThread,
+                id: 'thread-123',
                 comments: [
                     mockAddedComment1,
                     mockAddedComment2,

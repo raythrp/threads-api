@@ -1,4 +1,5 @@
 const NewThread = require('../../../Domains/threads/entities/NewThread')
+const ExistingThread = require('../../../Domains/threads/entities/ExistingThread')
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository')
 const AddThreadUseCase = require('../AddThreadUseCase')
 
@@ -11,12 +12,16 @@ describe('AddThreadUseCase', () => {
         }
 
         // Mocking mechanism
-        const mockAddedThread = {
+        const mockAddedThread = new ExistingThread({
             id: 'thread-123',
-            title: useCasePayload.title,
-            body: useCasePayload.body,
-            username: useCasePayload.username,
-        }
+            title: 'Thread Testing',
+            body: 'Halo',
+            username: 'dicoding',
+            is_deleted: false,
+            date: '2025-04-18 17:19:07.131+07',
+            comments: []
+        })
+
         const mockThreadRepository = new ThreadRepository() 
 
         mockThreadRepository.addThread = jest.fn()
@@ -26,11 +31,19 @@ describe('AddThreadUseCase', () => {
             threadRepository: mockThreadRepository
         })
 
-        // Act
+        // Action
         const addedThread = await addThreadUseCase.execute(useCasePayload)
 
         // Assert
-        expect(addedThread).toStrictEqual(mockAddedThread)
+        expect(addedThread).toStrictEqual(new ExistingThread({
+          id: 'thread-123',
+          username: useCasePayload.username,
+          body: useCasePayload.body,
+          title: useCasePayload.title,
+          is_deleted: false,
+          comments: [],
+          date: '2025-04-18 17:19:07.131+07'
+        }))
         expect(mockThreadRepository.addThread).toBeCalledWith(new NewThread(useCasePayload))
     })
 })

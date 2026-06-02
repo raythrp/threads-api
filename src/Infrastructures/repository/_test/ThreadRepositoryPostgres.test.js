@@ -33,7 +33,14 @@ describe('ThreadRepositoryPostgres', () => {
                 body: 'Halo',
                 username: 'dicoding'
             }))
-            expect(new Date(addedThread.date)).toBeInstanceOf(Date)
+
+            const threadFromDb = await ThreadsTableTestHelper.getThreadById('thread-123')
+            expect(new Date(threadFromDb.date)).toBeInstanceOf(Date)
+            expect(threadFromDb).toBeDefined()
+            expect(threadFromDb.title).toEqual('Thread testing')
+            expect(threadFromDb.username).toEqual('dicoding')
+            expect(threadFromDb.body).toEqual('Halo')
+            expect(threadFromDb.is_deleted).toEqual(false)
         })
     })
 
@@ -67,6 +74,11 @@ describe('ThreadRepositoryPostgres', () => {
                 username: 'dicoding'
             }))
             expect(new Date(thread.date)).toBeInstanceOf(Date)
+            expect(thread).toBeDefined()
+            expect(thread.title).toEqual('Thread testing')
+            expect(thread.username).toEqual('dicoding')
+            expect(thread.body).toEqual('Halo')
+            expect(thread.is_deleted).toEqual(false)
         })
     })
 })

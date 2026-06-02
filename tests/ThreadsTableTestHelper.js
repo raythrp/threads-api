@@ -18,7 +18,8 @@ const ThreadsTableTestHelper = {
             values: [id]
         }
 
-        await pool.query(query)
+        const result = await pool.query(query)
+        return result.rows[0]
     },
 
     async cleanTable() {

@@ -1,5 +1,4 @@
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper')
-const InvariantError = require('../../../Commons/exceptions/InvariantError')
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError')
 const NewComment = require('../../../Domains/comments/entities/NewComment')
 const pool = require('../../database/postgres/pool')
@@ -34,7 +33,14 @@ describe('CommentRepositoryPostgres', () => {
                 thread_id: 'thread-123',
                 username: 'dicoding'
             }))
-            expect(new Date(addedComment.date)).toBeInstanceOf(Date)
+
+            const commentFromDb = await CommentsTableTestHelper.findCommentById('comment-123')
+            expect(new Date(commentFromDb.date)).toBeInstanceOf(Date)
+            expect(commentFromDb).toBeDefined()
+            expect(commentFromDb.content).toEqual('Comment testing')
+            expect(commentFromDb.username).toEqual('dicoding')
+            expect(commentFromDb.thread_id).toEqual('thread-123')
+            expect(commentFromDb.is_deleted).toEqual(false)
         })
     })
 
@@ -62,6 +68,11 @@ describe('CommentRepositoryPostgres', () => {
                 username: 'dicoding'
             }))
             expect(new Date(addedComment.date)).toBeInstanceOf(Date)
+            expect(addedComment).toBeDefined()
+            expect(addedComment.content).toEqual('Comment testing')
+            expect(addedComment.username).toEqual('dicoding')
+            expect(addedComment.thread_id).toEqual('thread-123')
+            expect(addedComment.is_deleted).toEqual(false)
         })
     })
 
@@ -97,7 +108,7 @@ describe('CommentRepositoryPostgres', () => {
 
             // Assert
             expect(deletedComment).toEqual(expect.objectContaining({
-                content: 'Comment testing',
+                content: '**komentar telah dihapus**',
                 thread_id: 'thread-123',
                 username: 'dicoding',
                 is_deleted: true,
